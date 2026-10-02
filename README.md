@@ -1,27 +1,36 @@
-# Intel GPU WSL advisor
+# intel-gpu-wsl-advisor
 
-An independent Windows PowerShell tool for inspecting Intel GPU identifiers and consulting a bundled hardware table. It can optionally install a WSL Ubuntu distribution after explicit interactive confirmation.
+Check an Intel GPU and WSL environment and see which setup requirements need attention.
+
+## What you can do
+
+- Inspect the declared Windows/WSL environment checks.
+- Review compatibility guidance before changing the machine.
+
+## Current scope
+
+Compatibility guidance depends on detected hardware and reviewed tool versions. Installation or host changes must remain explicit operator actions.
+
+Package distribution is not activated by this documentation. Use the checked-in source and the declared dependency versions; published availability must be verified separately.
+
+## Getting started
+
+Start with the implementation and examples linked below. Review registered configuration and prerequisites before running a command that writes state or contacts a service.
+
+## Check your environment
+
+Run from a Windows PowerShell terminal after reviewing the script:
 
 ```powershell
-git clone https://github.com/zixcel/intel-gpu-wsl-advisor.git
-cd intel-gpu-wsl-advisor
 .\WhichVersionInstall.ps1
 ```
 
-GPU detection requires Windows. WSL installation may require an administrator terminal. No Windows configuration is changed until the installation prompt is accepted. The source migration does not run the installation scripts.
+GPU detection requires Windows. The script offers WSL Ubuntu installation only after an interactive confirmation; installation may require administrator rights. The bundled hardware table is historical guidance. Check the actual Windows driver, WSL kernel and selected runtime before relying on a recommendation.
 
-## Compatibility inputs
+## Documentation and source
 
-The bundled `Hardware/supported_hardware_table.tsv` is a historical snapshot, not a current compatibility guarantee. Verify the detected PCI ID against [Intel's supported hardware documentation](https://dgpu-docs.intel.com/overview/supported-hardware/i915-driver-gpus.html) and the selected runtime's requirements. Kernel versions are compared as structured versions, rather than decimal numbers.
+[Interface reference](docs/interface-reference.md)
 
-The script suggests Ubuntu 24.04 for a listed minimum kernel of 6.8 or later, or Ubuntu 22.04 for 5.15 through 6.7. Older or unrecognized requirements require manual review. Confirm the actual WSL kernel, Windows GPU driver and Linux runtime separately: selecting a distribution does not guarantee GPU support. See [Intel's installation guidance](https://dgpu-docs.intel.com/driver/client/overview.html) and [Intel's WSL prerequisites](https://www.intel.com/content/www/us/en/developer/articles/tool/pytorch-prerequisites-for-intel-gpu/2-5.html). Distribution installation must use a name listed by `wsl --list --online`.
+[Usage guide](docs/getting-started.md)
 
-[devino](https://github.com/zixcel/devino) can use this advice when preparing an experimental model-conversion environment. Application composition is owned by the caller.
-
-## Validation
-
-Migration checks inspect source, licensing, and references. Windows hardware detection and WSL installation require a Windows test environment and were not executed on the Linux migration host.
-
-## License
-
-Apache-2.0. See LICENSE and NOTICE. Retain the provenance of the bundled hardware data when updating it.
+[Contributing](CONTRIBUTING.md) · [Security reporting](SECURITY.md) · [License](LICENSE) · [Attribution notices](NOTICE)
