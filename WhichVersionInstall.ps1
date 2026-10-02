@@ -25,7 +25,7 @@ if ( -not $ubuntuVersion ) {
     Write-Host "[WARNING] No recommended Ubuntu WSL version found for this kernel version." -ForegroundColor Yellow
     Write-Host "[INFO] You can still manually choose a supported Ubuntu version for WSL installation."
     Write-Host "[INFO] Copy GPUs with supported drivers to Hardware\supported_hardware_table.tsv"
-    Write-Host "[INFO]   refer https://dgpu-docs.intel.com/devices/hardware-table.html"
+    Write-Host "[INFO]   refer https://dgpu-docs.intel.com/overview/supported-hardware/i915-driver-gpus.html"
     exit 0
 }
 
@@ -42,4 +42,4 @@ if ($confirmInstall -match "^[Yy]$") {
     Write-Host "       wsl --install -d <Ubuntu-Version>" -ForegroundColor Yellow
 }
 
-Write-Host "[INFO] Complite all process for advice. Hava a nice day!"
+Write-Host "[INFO] Environment advice complete."

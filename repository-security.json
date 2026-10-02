@@ -1,0 +1,10 @@
+{
+  "schema": "zixcel://repository-security/policy/v1",
+  "repository_id": "intel-gpu-wsl-advisor",
+  "scope": "source-secret-disclosure/v1",
+  "required_engines": [
+    "builtin-disclosure",
+    "gitleaks"
+  ],
+  "gitleaks_version": "8.30.1"
+}

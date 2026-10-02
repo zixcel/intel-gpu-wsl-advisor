@@ -3,7 +3,7 @@ param ($version)
 Write-Host "[INFO] Verifying WSL $version installation requirements..."
 
 if (-not $version) {
-    Write-Host "[ERROR] No Ubuntu version specified. Please provide a version (e.g., Ubuntu-22.04 or Ubuntu-24.10). Exiting." -ForegroundColor Red
+    Write-Host "[ERROR] No Ubuntu version specified. Please provide a version (e.g., Ubuntu-22.04 or Ubuntu-24.04). Exiting." -ForegroundColor Red
     exit 1
 }
 
@@ -16,7 +16,7 @@ if ($installedDistros -match "^$version$") {
 }
 
 Write-Host "[INFO] Installing Ubuntu $version in WSL..."
-wsl --install $version
+wsl --install --distribution $version
 
 # Output same log by WSL
 #Write-Host "[SUCCESS] Installation complete!" -ForegroundColor Green

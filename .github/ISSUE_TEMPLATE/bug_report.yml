@@ -1,0 +1,22 @@
+name: Bug report
+description: Report reproducible incorrect behavior using synthetic data.
+body:
+  - type: markdown
+    attributes:
+      value: "Report vulnerabilities privately through the Security tab. Do not include secrets or personal/customer data."
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Expected and observed behavior
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal synthetic reproduction and affected version
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Relevant environment and validation results

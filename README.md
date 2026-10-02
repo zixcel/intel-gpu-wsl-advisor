@@ -1,139 +1,27 @@
-# **Intel GPU Compatibility & WSL Setup for AI Inference**
-  
-This repository provides **PowerShell scripts** to detect **Intel GPUs**, check compatibility, and guide users through installing **Ubuntu on WSL** for AI inference workloads. It is specifically designed for **AI developers** who want to leverage their **Intel GPU** for deep learning and inference tasks.
+# Intel GPU WSL advisor
 
----
+An independent Windows PowerShell tool for inspecting Intel GPU identifiers and consulting a bundled hardware table. It can optionally install a WSL Ubuntu distribution after explicit interactive confirmation.
 
-## **Features**
-✅ **Automatic Intel GPU detection**  
-✅ **PCI Device ID extraction**  
-✅ **Kernel version compatibility check**  
-✅ **Recommended Ubuntu version for AI workloads**  
-✅ **Guided WSL installation process**  
-
----
-
-## **Requirements**
-🔹 **Intel GPU** (Integrated or Dedicated, e.g., Intel Arc, Iris Xe, UHD Graphics)  
-🔹 **Windows 10 / 11 with WSL support**  
-🔹 **PowerShell** (Run as Administrator for WSL installation)  
-🔹 **Supported Linux Kernel Version** (for GPU compatibility)  
-
----
-
-## **Installation**
-1️⃣ **Clone the repository**  
 ```powershell
-git clone https://github.com/your-repo/intel-gpu-wsl-setup.git
-cd intel-gpu-wsl-setup
-```
-
-2️⃣ **Run the script in PowerShell**  
-```powershell
+git clone https://github.com/zixcel/intel-gpu-wsl-advisor.git
+cd intel-gpu-wsl-advisor
 .\WhichVersionInstall.ps1
 ```
 
-3️⃣ **Follow the prompts**  
-- The script will detect your Intel GPU.  
-- It will check if your GPU is **compatible** with AI workloads.  
-- If compatible, it will **recommend an Ubuntu WSL version** for installation.  
-- You will be asked to confirm the **WSL installation** process.  
+GPU detection requires Windows. WSL installation may require an administrator terminal. No Windows configuration is changed until the installation prompt is accepted. The source migration does not run the installation scripts.
 
----
+## Compatibility inputs
 
-## **Supported Intel GPUs**
-This script checks compatibility based on a **hardware table (`supported_hardware_table.tsv`)**, which includes:
+The bundled `Hardware/supported_hardware_table.tsv` is a historical snapshot, not a current compatibility guarantee. Verify the detected PCI ID against [Intel's supported hardware documentation](https://dgpu-docs.intel.com/overview/supported-hardware/i915-driver-gpus.html) and the selected runtime's requirements. Kernel versions are compared as structured versions, rather than decimal numbers.
 
-- **Intel Arc Series**
-- **Intel Iris Xe Graphics**
-- **Intel UHD Graphics**
-- **Intel Data Center GPUs**
+The script suggests Ubuntu 24.04 for a listed minimum kernel of 6.8 or later, or Ubuntu 22.04 for 5.15 through 6.7. Older or unrecognized requirements require manual review. Confirm the actual WSL kernel, Windows GPU driver and Linux runtime separately: selecting a distribution does not guarantee GPU support. See [Intel's installation guidance](https://dgpu-docs.intel.com/driver/client/overview.html) and [Intel's WSL prerequisites](https://www.intel.com/content/www/us/en/developer/articles/tool/pytorch-prerequisites-for-intel-gpu/2-5.html). Distribution installation must use a name listed by `wsl --list --online`.
 
-> If your GPU is **not listed**, the script will notify you and **exit safely**.
+[devino](https://github.com/zixcel/devino) can use this advice when preparing an experimental model-conversion environment. Application composition is owned by the caller.
 
----
+## Validation
 
-## **Ubuntu Version Recommendation**
-| **Kernel Version** | **Recommended Ubuntu WSL Version** |
-|--------------------|----------------------------------|
-| 6.12+             | Ubuntu 24.10 (Oracular)         |
-| 6.8 - 6.11        | Ubuntu 24.04 (Noble)           |
-| 5.15 - 6.7        | Ubuntu 22.04 (Jammy)           |
-| 5.10 - 5.14       | Ubuntu 20.04 (Focal)           |
-| Below 5.10        | ❌ **Not Supported**            |
+Migration checks inspect source, licensing, and references. Windows hardware detection and WSL installation require a Windows test environment and were not executed on the Linux migration host.
 
-> **Note:** These recommendations are based on **[Intel GPU driver compatibility](https://dgpu-docs.intel.com/devices/hardware-table.html)** for AI workloads.
+## License
 
----
-
-## **How It Works**
-### **Step 1: Detect Intel GPU**
-- Uses `Get-WmiObject Win32_VideoController` to find **Intel GPUs**.
-- Extracts **PCI Device ID** for hardware identification.
-
-### **Step 2: Match GPU Compatibility**
-- Reads **`supported_hardware_table.tsv`** to check if your GPU is listed.
-- Identifies **Linux Kernel requirements**.
-
-### **Step 3: Recommend Ubuntu WSL Version**
-- Compares **Kernel version** and suggests an **Ubuntu version**.
-
-### **Step 4: Confirm & Install WSL**
-- Prompts the user to install the **recommended Ubuntu version**.
-- Runs `wsl --install` for a smooth **installation**.
-
----
-
-## **Example Output**
-```powershell
-[INFO] Starting GPU detection and compatibility check...
-[INFO] Detected Intel GPU: Intel Arc A770
-[INFO] PCI Device ID: 56A8
-[INFO] Matched GPU Model: Intel Arc A770
-[INFO] Required Linux Kernel Version: 6.8
-[INFO] Recommended Ubuntu WSL Version: Ubuntu 24.04 (Noble)
-
-[USER INPUT] Would you like to install Ubuntu WSL now? (Y/N)
-```
-
----
-
-## **Troubleshooting**
-🛠 **GPU Not Found?**  
-Ensure you have an **Intel GPU driver installed** and update Windows.
-
-🛠 **WSL Installation Fails?**  
-Run PowerShell as **Administrator** and check if WSL is enabled:  
-```powershell
-wsl --list --verbose
-```
-
-🛠 **Ubuntu Version Not Found?**  
-You can manually install using:
-```powershell
-wsl --install -d Ubuntu-22.04
-```
-
----
-
-## **Contributing**
-We welcome contributions!  
-🔹 Add support for new Intel GPUs  
-🔹 Improve compatibility checking  
-🔹 Enhance error handling  
-
----
-
-## **License**
-📜 **MIT License** - Free to use and modify.
-
----
-
-## **Future Plans**
-✅ Add **Intel OpenVINO support** for AI inference  
-✅ Auto-detect **WSL2 + GPU drivers**  
-✅ Support for **other AI accelerators**  
-
----
-
-🚀 **Get Started with AI Inference on Intel GPUs Now!** 🚀
+Apache-2.0. See LICENSE and NOTICE. Retain the provenance of the bundled hardware data when updating it.
