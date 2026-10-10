@@ -19,3 +19,10 @@ jobs:
           persist-credentials: false
       - name: Verify repository policy
         run: python3 .github/oss-policy-check.py
+      - name: Verify policy regression tests
+        run: cd .github && python3 -m unittest discover -s policy-tests
+      - name: Check policy types
+        run: |
+          python3 -m venv "$RUNNER_TEMP/policy-types"
+          "$RUNNER_TEMP/policy-types/bin/pip" install -r .github/policy/requirements.txt
+          "$RUNNER_TEMP/policy-types/bin/mypy" --strict .github/policy .github/oss-policy-check.py .github/policy-tests
