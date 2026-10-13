@@ -1,45 +1,23 @@
-Write-Host "[INFO] Starting GPU detection and compatibility check..."
+[CmdletBinding(SupportsShouldProcess = $true)]
+param([switch]$Install, [string]$DeviceId)
+$ErrorActionPreference = 'Stop'
 
-# Retrieve GPU information
-$gpu = & .\Hardware\GPUInfo.ps1
-
-# Extract PCI Device ID
-$pciID = & .\Hardware\PCIID.ps1 -PNPDeviceID $gpu.PNPDeviceID
-
-# Match GPU against the compatibility list
-$matchedGPU = & .\Hardware\GPUTable.ps1 -pciID $pciID
-
-# Display results
-Write-Host "[INFO] Detected Intel GPU: $($gpu.Name)"
-Write-Host "    [INFO] PCI Device ID: $pciID"
-Write-Host "    [INFO] Matched GPU Model: $($matchedGPU.Name)"
-Write-Host "    [INFO] Architecture: $($matchedGPU.Architecture)"
-Write-Host "    [INFO] Codename: $($matchedGPU.Codename)"
-
-# Extract and convert the kernel version
-$kernelVersion = $matchedGPU.Kernel
-Write-Host "    [INFO] Required Linux Kernel Version: $kernelVersion"
-$ubuntuVersion = & .\Hardware\UbuntuVersion.ps1 -kernelVersion $kernelVersion
-
-if ( -not $ubuntuVersion ) {
-    Write-Host "[WARNING] No recommended Ubuntu WSL version found for this kernel version." -ForegroundColor Yellow
-    Write-Host "[INFO] You can still manually choose a supported Ubuntu version for WSL installation."
-    Write-Host "[INFO] Copy GPUs with supported drivers to Hardware\supported_hardware_table.tsv"
-    Write-Host "[INFO]   refer https://dgpu-docs.intel.com/overview/supported-hardware/i915-driver-gpus.html"
-    exit 0
+# Detection/advice is read-only. Installation requires both an explicit switch
+# and normal PowerShell ShouldProcess approval; -WhatIf performs no WSL command.
+$gpu = & (Join-Path $PSScriptRoot 'Hardware/GPUInfo.ps1') -DeviceId $DeviceId
+$pciID = & (Join-Path $PSScriptRoot 'Hardware/PCIID.ps1') -PNPDeviceID $gpu.PNPDeviceID
+$matchedGPU = & (Join-Path $PSScriptRoot 'Hardware/GPUTable.ps1') -pciID $pciID
+$ubuntuVersion = & (Join-Path $PSScriptRoot 'Hardware/UbuntuVersion.ps1') -kernelVersion $matchedGPU.Kernel
+$advice = [pscustomobject]@{
+    Name = $gpu.Name; DeviceId = $gpu.PNPDeviceID; PciId = $pciID
+    HistoricalModel = $matchedGPU.Name; MinimumKernel = $matchedGPU.Kernel
+    SuggestedDistribution = $ubuntuVersion
+    CompatibilityVerified = $false
 }
-
-# Ask user for Ubuntu version installation
-Write-Host "Would you like to install Ubuntu WSL $ubuntuVersion now? (Y/N)" -ForegroundColor Yellow
-$confirmInstall = Read-Host
-
-if ($confirmInstall -match "^[Yy]$") {
-    # Install WSL
-    Write-Host "[INFO] Proceeding with WSL installation by Windows WSL."
-    & .\WSL\InstallWSLUbuntu.ps1 -version $ubuntuVersion
-} else {
-    Write-Host "[INFO] WSL installation skipped. You can manually install it later using:"
-    Write-Host "       wsl --install -d <Ubuntu-Version>" -ForegroundColor Yellow
+$advice
+if ($Install) {
+    if (-not $ubuntuVersion) { throw 'No installation target is defined for this historical entry.' }
+    if ($PSCmdlet.ShouldProcess($ubuntuVersion, 'Install a WSL distribution')) {
+        & (Join-Path $PSScriptRoot 'WSL/InstallWSLUbuntu.ps1') -version $ubuntuVersion -Confirm:$false
+    }
 }
-
-Write-Host "[INFO] Environment advice complete."

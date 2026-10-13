@@ -59,3 +59,13 @@ Schema definitions in the map remain owned by their canonical validator and
 consumers. An absent schema file means no separate schema file is declared; it does
 not mean the runtime interface has no validation. Do not introduce another common
 schema solely to mirror an implementation type.
+
+## Windows advisory and operation boundary
+
+`WhichVersionInstall.ps1` observes exactly one selected Intel GPU using CIM and
+returns historical advice; it never reports compatibility as verified. Selection
+is explicit when detection is ambiguous. All helper paths are rooted at the source
+script. Default invocation does not call WSL. `-Install` uses an allowlisted
+registered distribution, PowerShell ShouldProcess, exact existing-distribution
+comparison and process exit checking. Synthetic Windows acceptance is owned by
+`tests/advisor.tests.ps1` / `advisor-source.yml`; host installation is separate.

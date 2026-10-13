@@ -1,15 +1,10 @@
-Write-Host "[INFO] Retrieving Intel GPU information..."
-
-# Retrieve Intel GPU information using WMI
-$gpuList = Get-WmiObject Win32_VideoController | Where-Object { $_.AdapterCompatibility -match "Intel" }
-
-if (-not $gpuList) {
-    Write-Host "[ERROR] No Intel GPU detected. Exiting." -ForegroundColor Red
-    exit 1
+param([string]$DeviceId)
+$ErrorActionPreference = 'Stop'
+$gpuList = @(Get-CimInstance -ClassName Win32_VideoController | Where-Object {
+    $_.PNPDeviceID -match '(?i)VEN_8086&DEV_[0-9A-F]{4}'
+})
+if ($DeviceId) { $gpuList = @($gpuList | Where-Object { $_.PNPDeviceID -eq $DeviceId }) }
+if ($gpuList.Count -ne 1) {
+    throw 'Select exactly one detected Intel GPU with -DeviceId; no device is selected implicitly.'
 }
-
-# Select the first valid Intel GPU entry
-$gpu = $gpuList | Select-Object -First 1
-
-Write-Host "[SUCCESS] Intel GPU detected: $($gpu.Name)" -ForegroundColor Green
-return $gpu
+$gpuList[0]

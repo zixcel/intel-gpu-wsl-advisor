@@ -1,28 +1,6 @@
-param ($pciID)
-
-$tsvFilePath = ".\Hardware\supported_hardware_table.tsv"
-
-Write-Host "[INFO] Loading GPU compatibility data from: $tsvFilePath"
-
-if (-Not (Test-Path $tsvFilePath)) {
-    Write-Host "[ERROR] GPU data file not found. Please check the path. Exiting." -ForegroundColor Red
-    exit 1
-}
-
-# Import TSV file as an array of objects
-$gpuData = Import-Csv -Path $tsvFilePath -Delimiter "`t"
-
-Write-Host "[INFO] Searching for a matching GPU with PCI ID: $pciID"
-
-# Find matching GPU from TSV file
-$matchedGPU = $gpuData | Where-Object {
-    $_."PCI IDs" -split ", " -contains $pciID
-}
-
-if (-not $matchedGPU) {
-    Write-Host "[ERROR] No matching GPU found for PCI ID: $pciID. Exiting." -ForegroundColor Red
-    exit 1
-}
-
-Write-Host "[SUCCESS] Found matching GPU: $($matchedGPU.Name) (Architecture: $($matchedGPU.Architecture))" -ForegroundColor Green
-return $matchedGPU
+param([Parameter(Mandatory = $true)][string]$pciID)
+if ($pciID -notmatch '^[0-9A-Fa-f]{4}$') { throw 'PCI device ID must contain four hexadecimal digits.' }
+$table = Import-Csv -LiteralPath (Join-Path $PSScriptRoot 'supported_hardware_table.tsv') -Delimiter "`t"
+$entries = @($table | Where-Object { @($_.'PCI IDs' -split ',\s*') -contains $pciID })
+if ($entries.Count -ne 1) { throw 'The historical hardware table must contain exactly one matching entry.' }
+$entries[0]

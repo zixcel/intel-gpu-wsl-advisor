@@ -1,0 +1,15 @@
+name: Windows advisor source
+on:
+  pull_request:
+  push:
+    branches: [main, 'coela/**']
+permissions:
+  contents: read
+jobs:
+  synthetic-boundaries:
+    runs-on: windows-2025
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify advice and explicit installation boundaries
+        shell: pwsh
+        run: ./tests/advisor.tests.ps1
