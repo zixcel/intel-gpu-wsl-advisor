@@ -4,9 +4,35 @@
   "responsibility_boundary": "Own the named reusable integration/data mechanism. Product roles/UI and operational approvals stay with consumers; transport/custody reuse managed Crowsi components where capabilities fit. Planning-only APIs must remain clearly distinguished from implemented external operations.",
   "packages": [],
   "schema_definitions": [],
-  "test_sources": [],
+  "test_sources": [
+    "tests/advisor.tests.ps1"
+  ],
   "example_sources": [],
   "workflow_definitions": [
+    {
+      "path": ".github/workflows/advisor-source.yml",
+      "jobs": [
+        {
+          "job": "synthetic-boundaries",
+          "condition": null,
+          "runs_on": "windows-2025",
+          "steps": [
+            {
+              "name": null,
+              "run": null,
+              "uses": "actions/checkout@v4",
+              "condition": null
+            },
+            {
+              "name": "Verify advice and explicit installation boundaries",
+              "run": "./tests/advisor.tests.ps1",
+              "uses": null,
+              "condition": null
+            }
+          ]
+        }
+      ]
+    },
     {
       "path": ".github/workflows/oss-policy.yml",
       "jobs": [
