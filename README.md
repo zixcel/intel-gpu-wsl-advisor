@@ -34,3 +34,5 @@ GPU detection requires Windows. The script offers WSL Ubuntu installation only a
 [Usage guide](docs/getting-started.md)
 
 [Contributing](CONTRIBUTING.md) · [Security reporting](SECURITY.md) · [License](LICENSE) · [Attribution notices](NOTICE)
+
+[OSS responsibility and source completion](docs/oss-source-contract.md) defines the supported package boundary and required acceptance. It does not declare unexecuted source, distribution or production checks complete.
