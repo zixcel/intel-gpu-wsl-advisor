@@ -45,3 +45,5 @@ identity, ambiguous/unknown devices, version ordering, read-only defaults, WhatI
 existing distributions and failed discovery. No WSL installation or real GPU
 compatibility is established by these tests. The historical table is advisory;
 `CompatibilityVerified` remains false.
+
+Dependency updates: [repository policy](docs/dependency-updates.md).
