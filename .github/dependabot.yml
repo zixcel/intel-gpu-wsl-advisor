@@ -1,0 +1,34 @@
+version: 2
+updates:
+- package-ecosystem: pip
+  directories:
+  - /.github/policy
+  schedule:
+    interval: weekly
+    day: wednesday
+    time: 05:00
+    timezone: Asia/Tokyo
+  open-pull-requests-limit: 10
+  groups:
+    compatible-updates:
+      patterns:
+      - '*'
+      update-types:
+      - minor
+      - patch
+- package-ecosystem: github-actions
+  directories:
+  - /
+  schedule:
+    interval: weekly
+    day: wednesday
+    time: 05:00
+    timezone: Asia/Tokyo
+  open-pull-requests-limit: 10
+  groups:
+    compatible-updates:
+      patterns:
+      - '*'
+      update-types:
+      - minor
+      - patch
