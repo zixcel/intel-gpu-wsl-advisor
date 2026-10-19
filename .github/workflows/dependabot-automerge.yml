@@ -1,7 +1,7 @@
 name: Dependabot compatible merge
 on:
   workflow_run:
-    workflows: ["OSS policy", "Windows advisor source"]
+    workflows: ["Windows advisor source","OSS policy"]
     types: [completed]
   workflow_dispatch:
     inputs:
@@ -17,9 +17,11 @@ concurrency:
 jobs:
   merge:
     if: >-
-      vars.DEPENDABOT_AUTOMERGE_ENABLED == 'true' &&
+      vars.DEPENDABOT_AUTOMERGE_ENABLED == 'true' && github.ref == 'refs/heads/main' &&
       (github.event_name == 'workflow_dispatch' ||
-       (github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success'))
+       (github.event.workflow_run.event == 'pull_request' &&
+        github.event.workflow_run.actor.id == 49699333 &&
+        github.event.workflow_run.conclusion == 'success'))
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions:
@@ -29,6 +31,7 @@ jobs:
       statuses: read
       actions: read
     steps:
-      - uses: zixcel/zixcel-repository-security/.github/actions/dependabot-merge@05bc24e1b7dc3374919a35093e53b3dc66d6ab24
+      - uses: zixcel/zixcel-repository-security/.github/actions/dependabot-merge@9adf87acebe1d68abf18f71af9cb1af8e3c96770
         with:
+          required-workflows: '["Windows advisor source","OSS policy"]'
           pull-request-number: ${{ github.event.inputs.number || '' }}
