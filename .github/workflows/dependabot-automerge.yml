@@ -31,7 +31,7 @@ jobs:
       statuses: read
       actions: read
     steps:
-      - uses: zixcel/zixcel-repository-security/.github/actions/dependabot-merge@9adf87acebe1d68abf18f71af9cb1af8e3c96770
+      - uses: zixcel/zixcel-repository-security/.github/actions/dependabot-merge@821a96bb26cc41ee6adf5cf54c0532c47d522ce3
         with:
           required-workflows: '["Windows advisor source","OSS policy"]'
           pull-request-number: ${{ github.event.inputs.number || '' }}
